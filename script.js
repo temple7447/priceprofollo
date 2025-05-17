@@ -1,79 +1,170 @@
-// Smooth scroll for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
+// Animation Controller Class
+class AnimationController {
+    constructor() {
+        this.initIntersectionObserver();
+        this.initTypeWriter();
+        this.initScrollAnimations();
+        this.initCursorEffect();
+    }
+
+    initIntersectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, {
+            threshold: 0.2,
+            rootMargin: '0px'
         });
-    });
-});
 
-// Form submission handler
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    // Add your form submission logic here
-    alert('Thanks for your message! I\'ll get back to you soon.');
-    this.reset();
-});
+        document.querySelectorAll('section, .skill-card, .project-card').forEach(el => {
+            el.classList.add('animate-ready');
+            observer.observe(el);
+        });
+    }
 
-// Scroll reveal animation
-window.addEventListener('scroll', reveal);
+    initTypeWriter() {
+        const phrases = [
+            "Frontend Developer",
+            "UI Enthusiast",
+            "Web Designer"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingSpeed = 100;
+        const deleteSpeed = 50;
+        const pauseEnd = 2000;
 
-function reveal() {
-    const reveals = document.querySelectorAll('section');
-    
-    reveals.forEach(section => {
-        const windowHeight = window.innerHeight;
-        const revealTop = section.getBoundingClientRect().top;
-        const revealPoint = 150;
-        
-        if(revealTop < windowHeight - revealPoint) {
-            section.classList.add('active');
-        }
-    });
-}
+        const type = () => {
+            const current = phrases[phraseIndex];
+            const target = document.querySelector('.hero h2');
 
-// Typing animation for hero section
-const text = "Frontend Web Developer";
-let index = 0;
-const speed = 100;
+            if (isDeleting) {
+                target.textContent = current.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                target.textContent = current.substring(0, charIndex + 1);
+                charIndex++;
+            }
 
-function typeWriter() {
-    if (index < text.length) {
-        document.querySelector('.hero h2').textContent += text.charAt(index);
-        index++;
-        setTimeout(typeWriter, speed);
+            if (!isDeleting && charIndex === current.length) {
+                setTimeout(() => isDeleting = true, pauseEnd);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+            }
+
+            setTimeout(type, isDeleting ? deleteSpeed : typingSpeed);
+        };
+
+        type();
+    }
+
+    initScrollAnimations() {
+        let lastScroll = 0;
+        const nav = document.querySelector('nav');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            nav.classList.toggle('nav-hidden', currentScroll > lastScroll && currentScroll > 100);
+            lastScroll = currentScroll;
+        }, { passive: true });
+    }
+
+    initCursorEffect() {
+        const cursor = document.createElement('div');
+        cursor.className = 'cursor';
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+        });
     }
 }
 
-// Start typing animation when page loads
-window.addEventListener('load', () => {
-    document.querySelector('.hero h2').textContent = '';
-    setTimeout(typeWriter, 1000);
-});
+// Form Controller Class
+class FormController {
+    constructor() {
+        this.form = document.getElementById('contact-form');
+        this.initFormValidation();
+    }
 
-// Scroll reveal animation
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+    initFormValidation() {
+        this.form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (this.validateForm()) {
+                await this.handleSubmit();
+            }
+        });
+
+        this.form.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', () => this.validateInput(input));
+        });
+    }
+
+    validateInput(input) {
+        const isValid = input.checkValidity();
+        input.classList.toggle('invalid', !isValid);
+        return isValid;
+    }
+
+    validateForm() {
+        let isValid = true;
+        this.form.querySelectorAll('input, textarea').forEach(input => {
+            if (!this.validateInput(input)) isValid = false;
+        });
+        return isValid;
+    }
+
+    async handleSubmit() {
+        const submitBtn = this.form.querySelector('button');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        try {
+            // Add your form submission logic here
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+            this.showSuccess();
+        } catch (error) {
+            this.showError();
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Message';
         }
+    }
+
+    showSuccess() {
+        this.showToast('Message sent successfully!', 'success');
+        this.form.reset();
+    }
+
+    showError() {
+        this.showToast('Failed to send message. Please try again.', 'error');
+    }
+
+    showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new AnimationController();
+    new FormController();
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href'))
+                .scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
     });
-}, {
-    threshold: 0.1
-});
-
-document.querySelectorAll('section').forEach((section) => {
-    observer.observe(section);
-});
-
-// Skill cards stagger animation
-document.querySelectorAll('.skill-card').forEach((card, index) => {
-    card.style.animationDelay = `${index * 0.1}s`;
-});
-
-// Project cards stagger animation
-document.querySelectorAll('.project-card').forEach((card, index) => {
-    card.style.animationDelay = `${index * 0.2}s`;
 });
