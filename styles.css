@@ -58,11 +58,25 @@ nav {
 }
 
 section {
-    min-height: 100vh;
-    padding: 100px 150px;
+    min-height: 90vh;
+    padding: 70px 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .hero {
@@ -116,10 +130,23 @@ h2 {
     border-radius: 10px;
     text-align: center;
     transition: transform 0.3s;
+    animation: slideIn 0.5s ease forwards;
+    opacity: 0;
 }
 
 .skill-card:hover {
     transform: translateY(-5px);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .skill-card i {
@@ -172,10 +199,23 @@ h2 {
     border-radius: 5px;
     overflow: hidden;
     transition: transform 0.3s;
+    animation: scaleIn 0.5s ease forwards;
+    opacity: 0;
 }
 
 .project-card:hover {
     transform: translateY(-5px);
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .project-card img {
@@ -284,7 +324,7 @@ footer {
 
 @media (max-width: 768px) {
     section {
-        padding: 100px 30px;
+        padding: 60px 20px;
     }
 
     h1 {

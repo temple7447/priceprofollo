@@ -51,3 +51,29 @@ window.addEventListener('load', () => {
     document.querySelector('.hero h2').textContent = '';
     setTimeout(typeWriter, 1000);
 });
+
+// Scroll reveal animation
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, {
+    threshold: 0.1
+});
+
+document.querySelectorAll('section').forEach((section) => {
+    observer.observe(section);
+});
+
+// Skill cards stagger animation
+document.querySelectorAll('.skill-card').forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.1}s`;
+});
+
+// Project cards stagger animation
+document.querySelectorAll('.project-card').forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.2}s`;
+});
