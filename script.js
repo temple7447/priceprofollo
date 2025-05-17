@@ -34,7 +34,7 @@ function reveal() {
 }
 
 // Typing animation for hero section
-const text = "Full Stack Developer";
+const text = "Frontend Web Developer";
 let index = 0;
 const speed = 100;
 
