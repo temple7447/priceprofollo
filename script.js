@@ -154,6 +154,64 @@ class FormController {
     }
 }
 
+// Mobile Navigation Handler
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const navItems = document.querySelectorAll('.nav-item');
+
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('active');
+});
+
+// Close mobile menu when clicking nav items
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+    });
+});
+
+// Hide nav bar on scroll down, show on scroll up
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    const nav = document.querySelector('nav');
+    
+    if (currentScroll <= 0) {
+        nav.style.transform = 'translateY(0)';
+        return;
+    }
+    
+    if (currentScroll > lastScroll && !navLinks.classList.contains('active')) {
+        nav.style.transform = 'translateY(-100%)';
+    } else {
+        nav.style.transform = 'translateY(0)';
+    }
+    
+    lastScroll = currentScroll;
+});
+
+// Add active state to nav items based on scroll position
+window.addEventListener('scroll', () => {
+    let current = '';
+    const sections = document.querySelectorAll('section');
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (window.pageYOffset >= sectionTop - 60) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href').substring(1) === current) {
+            item.classList.add('active');
+        }
+    });
+});
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new AnimationController();
