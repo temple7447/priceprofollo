@@ -454,6 +454,94 @@ footer {
     transform: translateY(-3px);
 }
 
+#process {
+    background-color: var(--section-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+.process-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    position: relative;
+}
+
+.process-card {
+    position: relative;
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.process-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.process-icon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background: var(--secondary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-size: 2rem;
+}
+
+.process-number {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--accent-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.process-content h3 {
+    color: var(--heading-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.process-content p {
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.process-line {
+    position: absolute;
+    top: 40px;
+    right: -30px;
+    width: 60px;
+    height: 2px;
+    background: var(--secondary-color);
+    z-index: 1;
+}
+
+.process-card:last-child .process-line {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .hero-container {
         grid-template-columns: 1fr;
@@ -479,4 +567,37 @@ footer {
     .projects-grid {
         grid-template-columns: 1fr;
     }
+
+    .process-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .process-line {
+        display: none;
+    }
+
+    .process-card {
+        text-align: center;
+    }
+
+    .process-icon {
+        margin: 0 auto 1.5rem auto;
+    }
 }
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.process-card {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 1s);
+}
+
+.process-card:nth-child(1) { --i: 0; }
+.process-card:nth-child(2) { --i: 1; }
+.process-card:nth-child(3) { --i: 2; }
+.process-card:nth-child(4) { --i: 3; }
